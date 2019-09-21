@@ -2,25 +2,26 @@
 #define AUTODIFF_COMPOSABLE_FUNC_H
 
 #include <functional>
+#include <vector>
 
 namespace autodiff {
 namespace util {
 
 template<typename T, typename U, typename V>
-std::function<T(V)> compose(const std::function<T(U)>& outer,
-                            const std::function<U(V)>& inner) {
-  return [outer, inner](V v) { return outer(inner(v)); };
+std::function<T(V)> compose(const std::function<T(const U&)>& outer,
+                            const std::function<U(const V&)>& inner) {
+  return [outer, inner](const V& v) { return outer(inner(v)); };
 }
 
 template<typename Ret, typename Arg>
 class ComposableFunc {
  private:
-  std::function<Ret(Arg)> func_;
+  std::function<Ret(const Arg&)> func_;
 
  public:
-  explicit ComposableFunc(const std::function<Ret(Arg)>& func) : func_(func) {}
+  explicit ComposableFunc(const std::function<Ret(const Arg&)>& func) : func_(func) {}
 
-  const std::function<Ret(Arg)>& func() const { return func_; }
+  const std::function<Ret(const Arg&)>& func() const { return func_; }
 
   Ret operator()(const Arg& arg) const { return func()(arg); }
 
@@ -36,9 +37,6 @@ class ComposableFunc {
     return ComposableFunc(compose(outer.func(), func()));
   }
 };
-
-template<typename T>
-using EndoFunc = ComposableFunc<T, T>;
 
 } // namespace util
 } // namespace autodiff
