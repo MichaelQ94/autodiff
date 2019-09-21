@@ -8,14 +8,14 @@
 
 namespace autodiff {
 
+template<typename T>
+using DualFunc = util::EndoFunc<Dual<T>>;
+
 template<typename T, typename Id = util::Identity<T>>
 Dual<T> con(const T& c) { return Dual<T>(c, Id::zero()); }
 
 template<typename T, typename Id = util::Identity<T>>
 Dual<T> var(const T& t) { return Dual<T>(t, Id::one()); }
-
-template<typename T>
-using DualFunc = util::EndoFunc<Dual<T>>;
 
 template<typename T>
 DualFunc<T> dual_func(const std::function<Dual<T>(Dual<T>)>& dual_func) {
