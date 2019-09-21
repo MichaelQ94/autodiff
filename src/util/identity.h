@@ -1,5 +1,5 @@
-#ifndef AUTODIFF_UTIL_IDENTITY_H
-#define AUTODIFF_UTIL_IDENTITY_H
+#ifndef AUTODIFF_IDENTITY_H
+#define AUTODIFF_IDENTITY_H
 
 namespace autodiff {
 namespace util {

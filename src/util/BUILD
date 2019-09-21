@@ -3,8 +3,8 @@ package(
 )
 
 cc_library(
-  name = "func_util",
-  hdrs = ["func_util.h"],
+  name = "composable_func",
+  hdrs = ["composable_func.h"],
 )
 
 cc_library(

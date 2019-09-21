@@ -1,5 +1,5 @@
-#ifndef AUTODIFF_UTIL_FUNC_UTIL_H
-#define AUTODIFF_UTIL_FUNC_UTIL_H
+#ifndef AUTODIFF_COMPOSABLE_FUNC_H
+#define AUTODIFF_COMPOSABLE_FUNC_H
 
 #include <functional>
 

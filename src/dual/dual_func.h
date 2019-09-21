@@ -1,9 +1,9 @@
-#ifndef AUTODIFF_DUAL_DUAL_FUNC_H
-#define AUTODIFF_DUAL_DUAL_FUNC_H
+#ifndef AUTODIFF_DUAL_FUNC_H
+#define AUTODIFF_DUAL_FUNC_H
 
 #include <functional>
 
-#include "src/util/func_util.h"
+#include "src/util/composable_func.h"
 #include "src/util/identity.h"
 
 namespace autodiff {
