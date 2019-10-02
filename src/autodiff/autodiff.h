@@ -10,16 +10,16 @@
 namespace autodiff {
 
 template<typename T>
-std::function<T(const T&)> d(const DualFunc<T>& dual_func) {
+std::function<T(const T&)> derivative(const DualFunc<T>& dual_func) {
   return [dual_func](const T& t) {
     return dual_func(var(t)).dual();
   };
 }
 
 template<typename T>
-std::function<T(const std::vector<T>&)> p_d(
-    const MultiVarDualFunc<T>& multi_var_dual_func, size_t index) {
-  return [multi_var_dual_func, index](const std::vector<T>& args) {
+std::function<T(const std::vector<T>&)> partial_derivative(
+    const MultiVarDualFunc<T>& func, size_t index) {
+  return [func, index](const std::vector<T>& args) {
     std::vector<Dual<T>> dual_args;
     dual_args.reserve(args.size());
 
@@ -27,7 +27,23 @@ std::function<T(const std::vector<T>&)> p_d(
       dual_args.push_back(i == index ? var(args[i]) : con(args[i]));
     }
 
-    return multi_var_dual_func(dual_args).dual();
+    return func(dual_args).dual();
+  };
+}
+
+template<typename T>
+std::function<T(const std::vector<T>&, const std::vector<T>&)> directional_derivative(
+    const MultiVarDualFunc<T>& func) {
+  return [func](const std::vector<T>& position,
+      const std::vector<T>& velocity) {
+    std::vector<Dual<T>> dual_args;
+    dual_args.reserve(position.size());
+
+    for (int i = 0; i < position.size(); ++i) {
+      dual_args.push_back(Dual<T>(position[i], velocity[i]));
+    }
+
+    return func(dual_args).dual();
   };
 }
 
