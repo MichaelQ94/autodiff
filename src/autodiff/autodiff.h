@@ -18,8 +18,8 @@ std::function<T(const T&)> d(const DualFunc<T>& dual_func) {
 
 template<typename T>
 std::function<T(const std::vector<T>&)> p_d(
-    const NAryDualFunc<T>& n_ary_dual_func, size_t index) {
-  return [n_ary_dual_func, index](const std::vector<T>& args) {
+    const MultiVarDualFunc<T>& multi_var_dual_func, size_t index) {
+  return [multi_var_dual_func, index](const std::vector<T>& args) {
     std::vector<Dual<T>> dual_args;
     dual_args.reserve(args.size());
 
@@ -27,7 +27,7 @@ std::function<T(const std::vector<T>&)> p_d(
       dual_args.push_back(i == index ? var(args[i]) : con(args[i]));
     }
 
-    return n_ary_dual_func(dual_args).dual();
+    return multi_var_dual_func(dual_args).dual();
   };
 }
 

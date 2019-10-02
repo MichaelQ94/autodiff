@@ -27,7 +27,7 @@ DualFunc<T> dual_func(const std::function<T(T)>& function,
 }
 
 template<typename T>
-using NAryDualFunc = util::ComposableFunc<Dual<T>, std::vector<Dual<T>>>;
+using MultiVarDualFunc = util::ComposableFunc<Dual<T>, std::vector<Dual<T>>>;
 
 } // namespace autodiff
 
