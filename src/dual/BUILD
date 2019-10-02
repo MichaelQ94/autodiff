@@ -11,6 +11,7 @@ cc_library(
   name = "dual_func",
   hdrs = ["dual_func.h"],
   deps = [
+    "dual",
     "//src/util:composable_func",
     "//src/util:identity"
   ]

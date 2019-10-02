@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "src/autodiff/autodiff.h"
+#include "src/double/autodiff_double.h"
 
 template<typename T>
 void test_single(const autodiff::DualFunc<T>& func, const std::vector<T>& inputs) {
@@ -82,32 +83,12 @@ void test_directional(const autodiff::MultiVarDualFunc<T>& func, const std::vect
 }
 
 int main() {
-  /*
-  autodiff::DualFunc<double> f1([](autodiff::Dual<double> t) {
-    return t * t;
-  });
-
-  autodiff::DualFunc<double> f2([](const autodiff::Dual<double>& t) {
-    return t * autodiff::con(1.0/2);
-  });
-  auto func = f1 >> f2;
-
-  test_single(func, {0, 0.1, 0.2, 0.3, 0.00004, 0.00005, 6, 7, 8, 0.0009});
-  */
-
-  autodiff::MultiVarDualFunc<double> f([](const std::vector<autodiff::Dual<double>>& args) {
-    return args[0] + (args[1] * args[1]);
-  });
-
-  std::vector<std::vector<double>> test_args;
-
-  for (int i = 0; i < 5; ++i) {
-    for (int j = 0; j < 5; ++j) {
-      test_args.push_back({(double) i, (double) j});
-    }
+  std::vector<double> inputs;
+  for (double t = 0; t < 3.2; t += 0.1) {
+    inputs.push_back(t);
   }
 
-  test_directional(f, test_args);
+  test_single(autodiff::dbl::exp, inputs);
 
   return 0;
 }

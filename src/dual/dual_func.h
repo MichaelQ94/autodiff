@@ -3,6 +3,7 @@
 
 #include <functional>
 
+#include "src/dual/dual.h"
 #include "src/util/composable_func.h"
 #include "src/util/identity.h"
 
