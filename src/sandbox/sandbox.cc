@@ -3,6 +3,7 @@
 
 #include "src/autodiff/autodiff.h"
 #include "src/double/autodiff_double.h"
+#include "src/tensor/tensor.h"
 
 template<typename T>
 void test_single(const autodiff::DualFunc<T>& func, const std::vector<T>& inputs) {
@@ -82,13 +83,30 @@ void test_directional(const autodiff::MultiVarDualFunc<T>& func, const std::vect
 
 }
 
-int main() {
-  std::vector<double> inputs;
-  for (double t = 0; t < 3.2; t += 0.1) {
-    inputs.push_back(t);
+template<typename T>
+void test_tensor(const std::vector<std::vector<T>>& mat) {
+  std::vector<autodiff::Vector<T>> vectors;
+  for (const std::vector<T> vec : mat) {
+    vectors.push_back(autodiff::make_vector(vec));
   }
+  autodiff::Matrix<T> matrix = autodiff::make_tensor<T, 2>(vectors);
 
-  test_single(autodiff::dbl::exp, inputs);
+  for (int i = 0; i < matrix.shape()[0]; ++i) {
+    for (int j = 0; j < matrix.shape()[1]; ++j) {
+      std::cout << matrix[i][j] << ", ";
+    }
+    std::cout << std::endl;
+  }
+}
+
+int main() {
+  std::vector<std::vector<double>> mat;
+
+  mat.push_back({1, 2, 3});
+  mat.push_back({4, 5, 6});
+  mat.push_back({7, 8, 9});
+
+  test_tensor(mat);
 
   return 0;
 }

@@ -4,6 +4,7 @@
 #include <functional>
 
 #include "src/dual/dual.h"
+#include "src/tensor/tensor.h"
 #include "src/util/composable_func.h"
 #include "src/util/identity.h"
 
@@ -29,6 +30,9 @@ DualFunc<T> dual_func(const std::function<T(T)>& function,
 
 template<typename T>
 using MultiVarDualFunc = util::ComposableFunc<Dual<T>, std::vector<Dual<T>>>;
+
+template<typename T, size_t OutputOrder, size_t InputOrder>
+using TensorDualFunc = util::ComposableFunc<Tensor<Dual<T>, OutputOrder>, Tensor<Dual<T>, InputOrder>>;
 
 } // namespace autodiff
 

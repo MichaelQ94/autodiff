@@ -3,6 +3,7 @@ cc_binary(
   srcs = ["sandbox.cc"],
   deps = [
     "//src/autodiff:autodiff",
-    "//src/double:autodiff_double"
+    "//src/double:autodiff_double",
+    "//src/tensor:tensor"
   ],
 )
