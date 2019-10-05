@@ -133,7 +133,7 @@ Vector<T> make_vector(const std::vector<T>& scalars) {
 
   return Vector<T>(
     std::make_shared<tensor::Data<T, 1>>(
-      std::array<size_t, 1>({sub_tensors.size()}), sub_tensors));
+      tensor::Shape<1>({sub_tensors.size()}), std::move(sub_tensors)));
 }
 
 template<typename T, size_t Order>
