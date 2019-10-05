@@ -34,6 +34,10 @@ class Dual {
         real() / rhs.real(),
         (dual() / rhs.real()) - ((real() * rhs.dual()) / (rhs.real() * rhs.real())));
   }
+
+  Dual<T> operator-() const {
+    return Dual(-real(), -dual());
+  }
 };
 
 } // namespace autodiff
