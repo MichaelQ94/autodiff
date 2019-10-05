@@ -32,7 +32,7 @@ template<typename T>
 using MultiVarDualFunc = util::ComposableFunc<Dual<T>, std::vector<Dual<T>>>;
 
 template<typename T, size_t OutputOrder, size_t InputOrder>
-using TensorDualFunc = util::ComposableFunc<Tensor<Dual<T>, OutputOrder>, Tensor<Dual<T>, InputOrder>>;
+using TensorDualFunc = util::ComposableFunc<DTensor<T, OutputOrder>, DTensor<T, InputOrder>>;
 
 } // namespace autodiff
 
