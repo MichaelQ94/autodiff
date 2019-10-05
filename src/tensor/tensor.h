@@ -35,7 +35,7 @@ class Tensor {
   std::shared_ptr<const tensor::Data<T, Order>> data_;
 
  public:
-  Tensor(std::shared_ptr<tensor::Data<T, Order>> data) : data_(data) {}
+  Tensor(const std::shared_ptr<tensor::Data<T, Order>>& data) : data_(data) {}
   Tensor(const Tensor&) = default;
   Tensor(Tensor&&) = default;
   Tensor& operator=(const Tensor&) = default;
@@ -110,6 +110,18 @@ using Vector = Tensor<T, 1>;
 
 template<typename T>
 using Matrix = Tensor<T, 2>;
+
+template<typename T, size_t Order>
+using DTensor = Tensor<Dual<T>, Order>;
+
+template<typename T>
+using DScalar = DTensor<T, 0>;
+
+template<typename T>
+using DVector = DTensor<T, 1>;
+
+template<typename T>
+using DMatrix = DTensor<T, 2>;
 
 template<typename T>
 Vector<T> make_vector(const std::vector<T>& scalars) {
