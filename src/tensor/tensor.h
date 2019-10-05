@@ -32,17 +32,17 @@ struct Data {
 template<typename T, size_t Order>
 class Tensor {
  private:
-  std::shared_ptr<tensor::Data<T, Order>> data_;
+  std::shared_ptr<const tensor::Data<T, Order>> data_;
 
  public:
   Tensor(std::shared_ptr<tensor::Data<T, Order>> data) : data_(data) {}
+  Tensor(const Tensor&) = default;
+  Tensor(Tensor&&) = default;
+  Tensor& operator=(const Tensor&) = default;
+  Tensor& operator=(Tensor&&) = default;
 
   size_t order() const {
     return Order;
-  }
-
-  Tensor<T, Order - 1>& operator[](size_t index) {
-    return data_->sub_tensors_[index];
   }
 
   const Tensor<T, Order - 1>& operator[](size_t index) const {
@@ -64,6 +64,10 @@ class Tensor<T, 0> {
 
  public:
   Tensor(const T& value) : value_(value) {}
+  Tensor(const Tensor&) = default;
+  Tensor(Tensor&&) = default;
+  Tensor& operator=(const Tensor&) = default;
+  Tensor& operator=(Tensor&&) = default;
 
   operator T() const {
     return value_;
@@ -73,12 +77,28 @@ class Tensor<T, 0> {
     return 0;
   }
 
-  Tensor<T, 0> operator=(const Tensor<T, 0>& rhs) {
-    value_ = rhs.value_;
-  }
-
   const tensor::Shape<0>& shape() const {
     return SCALAR_SHAPE;
+  }
+
+  Tensor operator+(const Tensor& rhs) const {
+    return Tensor(value_ + rhs.value_);
+  }
+
+  Tensor operator-(const Tensor& rhs) const {
+    return Tensor(value_ - rhs.value_);
+  }
+
+  Tensor operator*(const Tensor& rhs) const {
+    return Tensor(value_ * rhs.value_);
+  }
+
+  Tensor operator/(const Tensor& rhs) const {
+    return Tensor(value_ / rhs.value_);
+  }
+
+  Tensor operator-() const {
+    return Tensor(-value_);
   }
 };
 
