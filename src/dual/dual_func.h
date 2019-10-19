@@ -11,10 +11,10 @@
 namespace autodiff {
 
 template<typename T, typename Id = util::Identity<T>>
-Dual<T> con(const T& c) { return Dual<T>(c, Id::zero()); }
+Dual<T> constant(const T& c) { return Dual<T>(c, Id::zero()); }
 
 template<typename T, typename Id = util::Identity<T>>
-Dual<T> var(const T& t) { return Dual<T>(t, Id::one()); }
+Dual<T> variable(const T& t) { return Dual<T>(t, Id::one()); }
 
 template<typename T>
 using DualFunc = util::ComposableFunc<Dual<T>, Dual<T>>;
@@ -23,8 +23,7 @@ template<typename T>
 DualFunc<T> dual_func(const std::function<T(T)>& function,
                       const std::function<T(T)>& derivative) {
   return DualFunc<T>([function, derivative](Dual<T> t) {
-    return Dual<T>(function(t.real()),
-                   derivative(t.real()) * t.dual());
+    return Dual<T>(function(t.real()), derivative(t.real()) * t.dual());
   });
 }
 

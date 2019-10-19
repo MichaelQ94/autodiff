@@ -12,7 +12,7 @@ namespace autodiff {
 template<typename T>
 std::function<T(const T&)> derivative(const DualFunc<T>& dual_func) {
   return [dual_func](const T& t) {
-    return dual_func(var(t)).dual();
+    return dual_func(variable(t)).dual();
   };
 }
 
@@ -24,7 +24,7 @@ std::function<T(const std::vector<T>&)> partial_derivative(
     dual_args.reserve(args.size());
 
     for (int i = 0; i < args.size(); ++i) {
-      dual_args.push_back(i == index ? var(args[i]) : con(args[i]));
+      dual_args.push_back(i == index ? variable(args[i]) : constant(args[i]));
     }
 
     return func(dual_args).dual();
