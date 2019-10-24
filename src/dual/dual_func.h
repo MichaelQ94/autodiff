@@ -8,11 +8,11 @@
 
 namespace autodiff {
 
-template<typename T, typename Id = util::Identity<T>>
-Dual<T> constant(const T& c) { return Dual<T>(c, Id::zero()); }
+template<typename T, typename Identity = util::Identity<T>>
+Dual<T> constant(const T& c) { return Dual<T>(c, Identity::zero()); }
 
-template<typename T, typename Id = util::Identity<T>>
-Dual<T> variable(const T& t) { return Dual<T>(t, Id::one()); }
+template<typename T, typename Identity = util::Identity<T>>
+Dual<T> variable(const T& t) { return Dual<T>(t, Identity::one()); }
 
 template <typename T>
 using DualFunc = std::function<Dual<T>(const Dual<T>&)>;
