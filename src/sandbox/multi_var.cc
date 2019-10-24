@@ -34,14 +34,14 @@ std::vector<std::vector<double>> generate_inputs(
 
 int main() {
   autodiff::MultiVarDualFunc<double> f([](const std::vector<autodiff::Dual<double>>& args) {
-    return args[0] * args[0] * args[1];
+    return args[0] * autodiff::dbl::ln(args[1]);
   });
 
   double lower_bound = 0;
   double upper_bound = 1;
   double step_size = 0.1;
 
-  size_t partial_derivative_index = 0;
+  size_t partial_derivative_index = 1;
 
   test(f,
        partial_derivative_index,
