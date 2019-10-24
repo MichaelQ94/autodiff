@@ -17,13 +17,21 @@ int main() {
     return t * t;
   });
 
+  autodiff::DualFunc<double> g([](autodiff::Dual<double> t) {
+    return autodiff::constant<double>(0.5) * t;
+  });
+
+  autodiff::DualFunc<double> h([=](autodiff::Dual<double> t) {
+    return g(f(t));
+  });
+
   std::vector<double> inputs;
 
   for (double i = 0; i < 3.2; i += 0.1) {
     inputs.push_back(i);
   }
 
-  test(f, inputs);
+  test(h, inputs);
 
   return 0;
 }
