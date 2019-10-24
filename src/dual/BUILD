@@ -12,8 +12,6 @@ cc_library(
   hdrs = ["dual_func.h"],
   deps = [
     "dual",
-    "//src/tensor:tensor",
-    "//src/util:composable_func",
     "//src/util:identity"
   ]
 )

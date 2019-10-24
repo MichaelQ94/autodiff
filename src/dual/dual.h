@@ -1,7 +1,4 @@
-#ifndef AUTODIFF_DUAL_H
-#define AUTODIFF_DUAL_H
-
-#include <functional>
+#pragma once
 
 namespace autodiff {
 
@@ -41,5 +38,3 @@ class Dual {
 };
 
 } // namespace autodiff
-
-#endif

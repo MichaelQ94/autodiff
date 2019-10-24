@@ -1,5 +1,4 @@
-#ifndef AUTODIFF_AUTODIFF_DOUBLE_H
-#define AUTODIFF_AUTODIFF_DOUBLE_H
+#pragma once
 
 #include "src/dual/dual_func.h"
 
@@ -17,5 +16,3 @@ extern const DualFunc<double> cosh;
 
 } // namespace double
 } // namespace autodiff
-
-#endif

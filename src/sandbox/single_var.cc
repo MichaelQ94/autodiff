@@ -13,11 +13,17 @@ void test(const autodiff::DualFunc<T>& func, const std::vector<T>& inputs) {
 }
 
 int main() {
-  autodiff::DualFunc<double> func([](autodiff::Dual<double> t) {
+  autodiff::DualFunc<double> f([](autodiff::Dual<double> t) {
     return t * t;
   });
 
-  test(func, {1, 2, 3, 4, 5, 6, 7, 8, 9});
+  std::vector<double> inputs;
+
+  for (double i = 0; i < 3.2; i += 0.1) {
+    inputs.push_back(i);
+  }
+
+  test(f, inputs);
 
   return 0;
 }

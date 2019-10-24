@@ -1,5 +1,4 @@
-#ifndef AUTODIFF_IDENTITY_H
-#define AUTODIFF_IDENTITY_H
+#pragma once
 
 namespace autodiff {
 namespace util {
@@ -12,5 +11,3 @@ struct Identity {
 
 } // namespace util
 } // namespace autodiff
-
-#endif
