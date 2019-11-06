@@ -19,7 +19,8 @@ class ComposableFunc {
   std::function<Ret(const Arg&)> func_;
 
  public:
-  explicit ComposableFunc(const std::function<Ret(const Arg&)>& func) : func_(func) {}
+  template<typename Func>
+  ComposableFunc(const Func& func) : func_(func) {}
 
   const std::function<Ret(const Arg&)>& func() const { return func_; }
 
