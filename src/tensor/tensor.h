@@ -54,7 +54,6 @@ class Tensor {
   }
 };
 
-template<>
 template<typename T>
 class Tensor<T, 0> {
  private:
