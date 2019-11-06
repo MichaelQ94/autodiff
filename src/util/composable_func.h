@@ -7,12 +7,6 @@
 namespace autodiff {
 namespace util {
 
-template<typename T, typename U, typename V>
-std::function<T(V)> compose(const std::function<T(const U&)>& outer,
-                            const std::function<U(const V&)>& inner) {
-  return [outer, inner](const V& v) { return outer(inner(v)); };
-}
-
 template<typename Ret, typename Arg>
 class ComposableFunc {
  private:
@@ -26,18 +20,40 @@ class ComposableFunc {
 
   Ret operator()(const Arg& arg) const { return func()(arg); }
 
-  template<typename InnerArg>
-  ComposableFunc<Ret, InnerArg> operator<<(
-      const ComposableFunc<Arg, InnerArg>& inner) const {
-    return ComposableFunc(compose(func(), inner.func()));
-  }
+  /*
+  Non-member operator overloads:
 
-  template<typename OuterRet>
-  ComposableFunc<OuterRet, Arg> operator>>(
-      const ComposableFunc<OuterRet, Ret>& outer) const {
-    return ComposableFunc(compose(outer.func(), func()));
-  }
+  template<typename T, typename U, typename V>
+  ComposableFunc<T, V> operator<<(
+      const ComposableFunc<T, U>& lhs,
+      const ComposableFunc<U, V>& rhs);
+  
+  template<typename T, typename U, typename V>
+  ComposableFunc<T, V> operator>>(
+      const ComposableFunc<T, U>& lhs,
+      const ComposableFunc<U, V>& rhs);
+  */
 };
+
+template<typename T, typename U, typename V>
+std::function<T(V)> compose(const std::function<T(const U&)>& outer,
+                            const std::function<U(const V&)>& inner) {
+  return [outer, inner](const V& v) { return outer(inner(v)); };
+}
+
+template<typename T, typename U, typename V>
+ComposableFunc<T, V> operator<<(
+    const ComposableFunc<T, U>& lhs,
+    const ComposableFunc<U, V>& rhs) {
+  return ComposableFunc<T, V>(compose(lhs.func(), rhs.func()));
+}
+
+template<typename T, typename U, typename V>
+ComposableFunc<T, V> operator>>(
+    const ComposableFunc<U, V>& lhs,
+    const ComposableFunc<T, U>& rhs) {
+  return ComposableFunc<T, V>(compose(rhs.func(), lhs.func()));
+}
 
 } // namespace util
 } // namespace autodiff
