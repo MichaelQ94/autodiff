@@ -6,14 +6,14 @@ namespace autodiff {
 namespace dbl {
 namespace {
 
-double (*std_exp)(double) = ::exp;
-double (*std_ln)(double) = ::log;
+double (*std_exp)(double) = std::exp;
+double (*std_ln)(double) = std::log;
 
-double (*std_sin)(double) = ::sin;
-double (*std_cos)(double) = ::cos;
+double (*std_sin)(double) = std::sin;
+double (*std_cos)(double) = std::cos;
 
-double (*std_sinh)(double) = ::sinh;
-double (*std_cosh)(double) = ::cosh;
+double (*std_sinh)(double) = std::sinh;
+double (*std_cosh)(double) = std::cosh;
 
 
 } // namespace;
