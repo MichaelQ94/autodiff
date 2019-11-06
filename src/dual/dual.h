@@ -11,34 +11,59 @@ class Dual {
   T real_, dual_;
 
  public:
-  explicit Dual(const T& real, const T& dual) : real_(real), dual_(dual) {}
+  explicit Dual(const T& real, const T& dual);
 
-  const T& real() const { return real_; }
-  const T& dual() const { return dual_; }
+  const T& real() const;
+  const T& dual() const;
 
-  Dual<T> operator+(const Dual<T>& rhs) const {
-    return Dual(real() + rhs.real(), dual() + rhs.dual());
-  }
+  Dual<T> operator-() const;
 
-  Dual<T> operator-(const Dual<T>& rhs) const {
-    return Dual(real() - rhs.real(), dual() - rhs.dual());
-  }
+  /*
+  Non-member operator overloads:
 
-  Dual<T> operator*(const Dual<T>& rhs) const {
-    return Dual(real() * rhs.real(),
-                (dual() * rhs.real()) + (real() * rhs.dual()));
-  }
-
-  Dual<T> operator/(const Dual<T>& rhs) const {
-    return Dual(
-        real() / rhs.real(),
-        (dual() / rhs.real()) - ((real() * rhs.dual()) / (rhs.real() * rhs.real())));
-  }
-
-  Dual<T> operator-() const {
-    return Dual(-real(), -dual());
-  }
+  Dual<T> operator+(const Dual<T>& lhs, const Dual<T>& rhs);
+  Dual<T> operator-(const Dual<T>& lhs, const Dual<T>& rhs);
+  Dual<T> operator*(const Dual<T>& lhs, const Dual<T>& rhs);
+  Dual<T> operator/(const Dual<T>& lhs, const Dual<T>& rhs);
+  */
 };
+
+template<typename T>
+Dual<T>::Dual(const T& real, const T& dual) : real_(real), dual_(dual) {}
+
+template<typename T>
+const T& Dual<T>::real() const { return real_; }
+
+template<typename T>
+const T& Dual<T>::dual() const { return dual_; }
+
+template<typename T>
+Dual<T> Dual<T>::operator-() const {
+  return Dual<T>(-real(), -dual());
+}
+
+template<typename T>
+Dual<T> operator+(const Dual<T>& lhs, const Dual<T>& rhs) {
+  return Dual<T>(lhs.real() + rhs.real(), lhs.dual() + rhs.dual());
+}
+
+template<typename T>
+Dual<T> operator-(const Dual<T>& lhs, const Dual<T>& rhs) {
+  return Dual<T>(lhs.real() - rhs.real(), lhs.dual() - rhs.dual());
+}
+
+template<typename T>
+Dual<T> operator*(const Dual<T>& lhs, const Dual<T>& rhs) {
+  return Dual<T>(lhs.real() * rhs.real(),
+              (lhs.dual() * rhs.real()) + (lhs.real() * rhs.dual()));
+}
+
+template<typename T>
+Dual<T> operator/(const Dual<T>& lhs, const Dual<T>& rhs) {
+  return Dual<T>(
+      lhs.real() / rhs.real(),
+      (lhs.dual() / rhs.real()) - ((lhs.real() * rhs.dual()) / (rhs.real() * rhs.real())));
+}
 
 } // namespace autodiff
 
