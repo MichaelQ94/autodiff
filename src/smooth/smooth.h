@@ -25,6 +25,9 @@ private:
 public:
   ConstFn(const T& value) : value_(value) {}
 
+  static const typename SmoothFnBase<T, Identity>::Ptr ZERO;
+  static const typename SmoothFnBase<T, Identity>::Ptr ONE;
+
   static typename SmoothFnBase<T, Identity>::Ptr make(const T& value) {
     return std::make_shared<ConstFn<T, Identity>>(value);
   }
@@ -34,9 +37,17 @@ public:
   }
 
   typename SmoothFnBase<T, Identity>::Ptr derivative() const {
-    return make(Identity::zero());
+    return ZERO;
   }
 };
+
+template<typename T, typename Identity>
+const typename SmoothFnBase<T, Identity>::Ptr ConstFn<T, Identity>::ZERO
+  = ConstFn<T, Identity>::make(Identity::zero());
+
+template<typename T, typename Identity>
+const typename SmoothFnBase<T, Identity>::Ptr ConstFn<T, Identity>::ONE
+  = ConstFn<T, Identity>::make(Identity::one());
 
 template<typename T, typename Identity>
 class IdentityFn : public SmoothFnBase<T, Identity> {
@@ -52,7 +63,7 @@ public:
   }
 
   typename SmoothFnBase<T, Identity>::Ptr derivative() const {
-    return ConstFn<T, Identity>::make(Identity::one());
+    return ConstFn<T, Identity>::ONE;
   }
 };
 
