@@ -5,10 +5,13 @@
 
 template<typename T>
 void test(const autodiff::SmoothFn<T>& func, const std::vector<T>& inputs) {
-  autodiff::SmoothFn<T> derivative = func.derivative();
+  autodiff::SmoothFn<T> derivative1 = func.derivative();
+  autodiff::SmoothFn<T> derivative2 = func.derivative(2);
   for (auto& t : inputs) {
     std::cout << "f(" << t << ") = " << func(t)
-        << ", f'(" << t << ") = " << derivative(t) << std::endl;
+        << ", f'(" << t << ") = " << derivative1(t)
+        << ", f''(" << t << ") = " << derivative2(t)
+        << std::endl;
   }
 }
 

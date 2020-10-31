@@ -77,6 +77,7 @@ public:
     return (*lhs_)(t) + (*rhs_)(t);
   }
 
+  // (f + g)' = f' + g'
   typename SmoothFnBase<T, Identity>::Ptr derivative() const {
     return make(lhs_->derivative(), rhs_->derivative());
   }
@@ -103,6 +104,7 @@ public:
     return (*lhs_)(t) - (*rhs_)(t);
   }
 
+  // (f - g)' = f' - g'
   typename SmoothFnBase<T, Identity>::Ptr derivative() const {
     return make(lhs_->derivative(), rhs_->derivative());
   }
@@ -129,6 +131,7 @@ public:
     return (*lhs_)(t) * (*rhs_)(t);
   }
 
+  // (f * g)' = (f' * g) + (f * g')
   typename SmoothFnBase<T, Identity>::Ptr derivative() const {
     return SumFn<T, Identity>::make(
       ProductFn<T, Identity>::make(lhs_->derivative(), rhs_),
@@ -157,6 +160,7 @@ public:
     return (*lhs_)(t) / (*rhs_)(t);
   }
 
+  // (f / g)' = ((f' * g) - (f * g')) / (g * g)
   typename SmoothFnBase<T, Identity>::Ptr derivative() const {
     return QuotientFn<T, Identity>::make(
       DifferenceFn<T, Identity>::make(
@@ -173,8 +177,8 @@ private:
 
 public:
   CompositeFn(
-    const typename SmoothFnBase<T, Identity>::Ptr& outer,
-    const typename SmoothFnBase<T, Identity>::Ptr& inner)
+      const typename SmoothFnBase<T, Identity>::Ptr& outer,
+      const typename SmoothFnBase<T, Identity>::Ptr& inner)
     : outer_(outer), inner_(inner) {}
 
   static typename SmoothFnBase<T, Identity>::Ptr make(
@@ -187,7 +191,7 @@ public:
     return (*outer_)((*inner_)(t));
   }
 
-  // [f o g]' = [f' o g] * g'
+  // (f o g)' = (f' o g) * g'
   typename SmoothFnBase<T, Identity>::Ptr derivative() const {
     return ProductFn<T, Identity>::make(
       CompositeFn<T, Identity>::make(outer_->derivative(), inner_),
@@ -209,7 +213,6 @@ public:
     return SmoothFn<T, Identity>(IdentityFn<T, Identity>::make());
   }
 
-
   T operator()(const T& t) const {
     return (*delegate_)(t);
   }
@@ -219,82 +222,32 @@ public:
   }
 
   SmoothFn<T, Identity> derivative(int n) const {
-    return n == 0
-      ? SmoothFn(delegate_)
-      : derivative(n - 1).derivative();
+    return n == 0 ? *this: derivative(n - 1).derivative();
   }
 
-  template<typename U, typename I>
-  friend SmoothFn<U, I> operator+(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
+  SmoothFn<T, Identity> operator+(const SmoothFn<T, Identity>& rhs) const {
+    return SmoothFn<T, Identity>(SumFn<T, Identity>::make(delegate_, rhs.delegate_));
+  }
 
-  template<typename U, typename I>
-  friend SmoothFn<U, I> operator-(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
+  SmoothFn<T, Identity> operator-(const SmoothFn<T, Identity>& rhs) const {
+    return SmoothFn<T, Identity>(DifferenceFn<T, Identity>::make(delegate_, rhs.delegate_));
+  }
 
-  template<typename U, typename I>
-  friend SmoothFn<U, I> operator*(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
+  SmoothFn<T, Identity> operator*(const SmoothFn<T, Identity>& rhs) const {
+    return SmoothFn<T, Identity>(ProductFn<T, Identity>::make(delegate_, rhs.delegate_));
+  }
 
-  template<typename U, typename I>
-  friend SmoothFn<U, I> operator/(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
+  SmoothFn<T, Identity> operator/(const SmoothFn<T, Identity>& rhs) const {
+    return SmoothFn<T, Identity>(QuotientFn<T, Identity>::make(delegate_, rhs.delegate_));
+  }
 
-  template<typename U, typename I>
-  friend SmoothFn<U, I> operator<<(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
+  SmoothFn<T, Identity> operator<<(const SmoothFn<T, Identity>& rhs) const {
+    return SmoothFn<T, Identity>(CompositeFn<T, Identity>::make(delegate_, rhs.delegate_));
+  }
 
-  template<typename U, typename I>
-  friend SmoothFn<U, I> operator>>(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
+  SmoothFn<T, Identity> operator>>(const SmoothFn<T, Identity>& rhs) const {
+    return SmoothFn<T, Identity>(CompositeFn<T, Identity>::make(rhs.delegate_, delegate_));
+  }
 };
-
-template<typename T, typename Identity>
-SmoothFn<T, Identity> operator+(
-  const SmoothFn<T, Identity>& lhs, const SmoothFn<T, Identity>& rhs) {
-  return SmoothFn<T, Identity>(
-    SumFn<T, Identity>::make(
-      lhs.delegate_,
-      rhs.delegate_));
-}
-
-template<typename T, typename Identity>
-SmoothFn<T, Identity> operator-(
-  const SmoothFn<T, Identity>& lhs, const SmoothFn<T, Identity>& rhs) {
-  return SmoothFn<T, Identity>(
-    DifferenceFn<T, Identity>::make(
-      lhs.delegate_,
-      rhs.delegate_));
-}
-
-template<typename T, typename Identity>
-SmoothFn<T, Identity> operator*(
-  const SmoothFn<T, Identity>& lhs, const SmoothFn<T, Identity>& rhs) {
-  return SmoothFn<T, Identity>(
-    ProductFn<T, Identity>::make(
-      lhs.delegate_,
-      rhs.delegate_));
-}
-
-template<typename T, typename Identity>
-SmoothFn<T, Identity> operator/(
-  const SmoothFn<T, Identity>& lhs, const SmoothFn<T, Identity>& rhs) {
-  return SmoothFn<T, Identity>(
-    QuotientFn<T, Identity>::make(
-      lhs.delegate_,
-      rhs.delegate_));
-}
-
-template<typename T, typename Identity>
-SmoothFn<T, Identity> operator<<(
-  const SmoothFn<T, Identity>& lhs, const SmoothFn<T, Identity>& rhs) {
-  return SmoothFn<T, Identity>(
-    CompositeFn<T, Identity>::make(
-      lhs.delegate_,
-      rhs.delegate_));
-}
-
-template<typename T, typename Identity>
-SmoothFn<T, Identity> operator>>(
-  const SmoothFn<T, Identity>& lhs, const SmoothFn<T, Identity>& rhs) {
-  return SmoothFn<T, Identity>(
-    CompositeFn<T, Identity>::make(
-      rhs.delegate_,
-      lhs.delegate_));
-}
 
 } // namespace autodiff
