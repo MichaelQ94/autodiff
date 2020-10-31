@@ -15,7 +15,6 @@ void test(const autodiff::SmoothFn<T>& func, const std::vector<T>& inputs) {
 int main() {
   autodiff::SmoothFn<double> f =
     autodiff::SmoothFn<double>::identity()
-      * autodiff::SmoothFn<double>::identity()
       * autodiff::SmoothFn<double>::identity();
 
   std::vector<double> inputs;
@@ -24,7 +23,7 @@ int main() {
     inputs.push_back(i);
   }
 
-  test(f, inputs);
+  test(f << f, inputs);
 
   return 0;
 }

@@ -185,6 +185,39 @@ public:
   }
 };
 
+template<typename T, typename Identity>
+class CompositeFn : public SmoothFnBase<T, Identity> {
+private:
+  const typename SmoothFnBase<T, Identity>::Ptr outer_, inner_;
+
+  CompositeFn(
+    typename SmoothFnBase<T, Identity>::Ptr&& outer,
+    typename SmoothFnBase<T, Identity>::Ptr&& inner)
+    : outer_(std::move(outer)), inner_(std::move(inner)) {}
+
+public:
+  static typename SmoothFnBase<T, Identity>::Ptr make(
+      typename SmoothFnBase<T, Identity>::Ptr&& outer,
+      typename SmoothFnBase<T, Identity>::Ptr&& inner) {
+    return wrap_unique(new CompositeFn(std::move(outer), std::move(inner)));
+  }
+
+  T operator()(const T& t) const {
+    return (*outer_)((*inner_)(t));
+  }
+
+  // [f o g]' = [f' o g] * g'
+  typename SmoothFnBase<T, Identity>::Ptr derivative() const {
+    return ProductFn<T, Identity>::make(
+      CompositeFn<T, Identity>::make(outer_->derivative(), inner_->copy()),
+      inner_->derivative());
+  }
+
+  typename SmoothFnBase<T, Identity>::Ptr copy() const {
+    return make(inner_->copy(), outer_->copy());
+  }
+};
+
 } // namespace
 
 template<typename T, typename Identity = util::Identity<T>>
@@ -234,6 +267,12 @@ public:
 
   template<typename U, typename I>
   friend SmoothFn<U, I> operator/(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
+
+  template<typename U, typename I>
+  friend SmoothFn<U, I> operator<<(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
+
+  template<typename U, typename I>
+  friend SmoothFn<U, I> operator>>(const SmoothFn<U, I>& lhs, const SmoothFn<U, I>& rhs);
 };
 
 template<typename T, typename Identity>
@@ -270,6 +309,24 @@ SmoothFn<T, Identity> operator/(
     QuotientFn<T, Identity>::make(
       lhs.delegate_->copy(),
       rhs.delegate_->copy()));
+}
+
+template<typename T, typename Identity>
+SmoothFn<T, Identity> operator<<(
+  const SmoothFn<T, Identity>& lhs, const SmoothFn<T, Identity>& rhs) {
+  return SmoothFn<T, Identity>(
+    CompositeFn<T, Identity>::make(
+      lhs.delegate_->copy(),
+      rhs.delegate_->copy()));
+}
+
+template<typename T, typename Identity>
+SmoothFn<T, Identity> operator>>(
+  const SmoothFn<T, Identity>& lhs, const SmoothFn<T, Identity>& rhs) {
+  return SmoothFn<T, Identity>(
+    CompositeFn<T, Identity>::make(
+      rhs.delegate_->copy(),
+      lhs.delegate_->copy()));
 }
 
 } // namespace autodiff
