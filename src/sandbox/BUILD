@@ -15,3 +15,11 @@ cc_binary(
     "//src/double:autodiff_double",
   ],
 )
+
+cc_binary(
+  name = "smooth",
+  srcs = ["smooth.cc"],
+  deps = [
+    "//src/smooth:smooth",
+  ],
+)
