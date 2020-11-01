@@ -51,11 +51,12 @@ const typename SmoothFnBase<T, Identity>::Ptr ConstFn<T, Identity>::ONE
 
 template<typename T, typename Identity>
 class IdentityFn : public SmoothFnBase<T, Identity> {
+  static const typename SmoothFnBase<T, Identity>::Ptr INSTANCE;
+
 public:
-  IdentityFn() {}
 
   static typename SmoothFnBase<T, Identity>::Ptr make() {
-    return std::make_shared<IdentityFn>();
+    return INSTANCE;
   }
 
   T operator()(const T& t) const {
@@ -66,6 +67,10 @@ public:
     return ConstFn<T, Identity>::ONE;
   }
 };
+
+template<typename T, typename Identity>
+const typename SmoothFnBase<T, Identity>::Ptr IdentityFn<T, Identity>::INSTANCE
+  = std::make_shared<IdentityFn>();
 
 template<typename T, typename Identity>
 class SumFn : public SmoothFnBase<T, Identity> {
